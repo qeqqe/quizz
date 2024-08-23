@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fancy Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 m-0 p-0 box-border font-sans flex items-center justify-center min-h-screen">
+    <div id="quiz-container" class="bg-white bg-opacity-20 backdrop-blur-md shadow-lg m-100px h-[500px] w-[500px] p-[20px] rounded-2xl border border-white/30">
+        <h2 id="question" class="text-center mt-8 text-slate-50 text-3xl font-bold mb-[40px] animate-fadeIn">
+            Question will appear here
+        </h2>
+        <div id="options" class="flex flex-col text-left mt-4 space-y-4 animate-fadeIn">
+            <!-- Options will be dynamically generated here -->
+        </div>
+        <button id="next-button" class="mt-8 bg-blue-700 text-white font-medium text-xl w-full py-3 rounded-xl hover:bg-blue-800 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg active:scale-95" onclick="nextQuestion()">
+            Next
+        </button>
+    </div>
+
+    <script>
+        // Quiz data
+        const quizData = [
+            {
+                question: "What is the capital of France?",
+                options: ["Paris", "London", "Berlin", "Madrid"],
+                correct: "Paris"
+            },
+            {
+                question: "Who was in paris?",
+                options: ["Skibidi toilet final boss", "NNNNN", "William Shakespeare", "Me"],
+                correct: "NNNNN"
+            },
+            {
+                question: "What is the chemical symbol for water?",
+                options: ["O2", "H2O", "CO2", "HO2"],
+                correct: "H2O"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        // Initialize quiz
+        function loadQuestion() {
+            const currentQuestion = quizData[currentQuestionIndex];
+            document.getElementById("question").textContent = currentQuestion.question;
+
+            const optionsContainer = document.getElementById("options");
+            optionsContainer.innerHTML = ''; // Clear previous options
+
+            currentQuestion.options.forEach(option => {
+                const button = document.createElement("button");
+                button.textContent = option;
+                button.className = "text-left text-gray-900 text-lg cursor-pointer transition-all font-semibold border-[2px] border-gray-300 hover:bg-gray-700 hover:text-white rounded-xl py-3 px-4 m-1 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-none";
+                button.onclick = () => selectOption(option);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        // Handle option selection
+        function selectOption(selectedOption) {
+            const correctOption = quizData[currentQuestionIndex].correct;
+            if (selectedOption === correctOption) {
+                score++;
+            }
+            nextQuestion();
+        }
+
+        // Move to the next question or show results
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById("quiz-container").innerHTML = `
+                <h2 class="text-slate-50 text-3xl font-bold mb-8 animate-fadeIn">Quiz Completed!</h2>
+                <p class="text-slate-50 text-xl font-medium animate-fadeIn">Your Score: ${score}/${quizData.length}</p>
+                <button class="mt-8 bg-green-600 text-white font-medium text-xl w-full py-3 rounded-xl hover:bg-green-700 transition-all duration-300 ease-in-out shadow-md hover:shadow-lg active:scale-95" onclick="restartQuiz()">
+                    Restart Quiz
+                </button>
+            `;
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        window.onload = loadQuestion;
+    </script>
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
+</body>
+</html>
